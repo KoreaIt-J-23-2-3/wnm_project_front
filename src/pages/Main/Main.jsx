@@ -5,6 +5,10 @@ import mainview from '../../images/Main/MainView.jpg'
 import RootContainer from '../../components/RootContainer/RootContainer';
 
 function Main(props) {
+
+    localStorage.removeItem("orderData")
+    localStorage.removeItem("isCart")
+    
     return (
         <RootContainer>
             <div css={S.SMainViewImgBox}>

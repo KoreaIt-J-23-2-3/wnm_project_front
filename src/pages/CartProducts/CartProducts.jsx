@@ -40,6 +40,9 @@ function CartProducts(props) {
         }
     })
 
+    localStorage.removeItem("orderData")
+    localStorage.removeItem("isCart")
+
     useEffect(() => {
         if(!principal.data) {
             alert("로그인 후 사용해주세요.")

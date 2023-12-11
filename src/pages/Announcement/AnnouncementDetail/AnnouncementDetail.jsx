@@ -6,6 +6,7 @@ import { useQuery, useQueryClient } from 'react-query';
 import { deleteAnnouncementApi, getAnnouncementByIdApi } from '../../../apis/api/announcement';
 import RootContainer from '../../../components/RootContainer/RootContainer';
 import { useNavigate } from 'react-router';
+import Swal from 'sweetalert2';
 
 function AnnouncementDetail(props) {
     const navigate = useNavigate();
@@ -25,7 +26,7 @@ function AnnouncementDetail(props) {
     {
         retry: 0,
         onSuccess: response => {
-            setAnnouncementData(response.data)
+            setAnnouncementData(response?.data)
         }
     })
 
@@ -38,21 +39,42 @@ function AnnouncementDetail(props) {
     }
 
     const handleDeleteClick = async (announcementDataId) => {
-        
-        if(window.confirm("삭제 하시겠습니까?")) {
-            try {
-                const option = {
-                    headers: {
-                        Authorization: localStorage.getItem("accessToken")
+        Swal.fire({
+            icon: "question",
+            title: "삭제 확인",
+            text: "공지사항을 삭제 하시겠습니까?",
+
+            showCancelButton: true,
+            confirmButtonText: "확인",
+            confirmButtonColor: "#3085d6",
+            cancelButtonText: "취소",
+            cancelButtonColor: "#d33"
+        }).then((result) => {
+            if(result.isConfirmed) {
+                try {
+                    const option = {
+                        headers: {
+                            Authorization: localStorage.getItem("accessToken")
+                        }
                     }
-                }
-                const response = await deleteAnnouncementApi(announcementDataId, option);
-                alert("삭제가 완료되었습니다.")
-                return response;
-            } catch (error) {
-                alert(error.message)
-            }   
-        }
+                    const response = deleteAnnouncementApi(announcementDataId, option);
+                    Swal.fire({
+                        icon: "success",
+                        title: "삭제 성공",
+                        text: "공지사항이 삭제 되었습니다."
+                    }).then((result) => {
+                        if(result.isConfirmed) {
+                            navigate("/notice")
+                        }
+                    })
+                    return response;
+                } catch (error) {
+                    alert(error.message)
+                } 
+            } else if(result.isDismissed) {
+                
+            }
+        })
     }
 
     const HandleCancle = () => {

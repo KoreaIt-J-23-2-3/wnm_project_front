@@ -273,15 +273,15 @@ function BuyInfo(props) {
                         <h2>결제 정보</h2>
                         <div css={S.SPriceBox}>
                             <h3 css={S.SPriceTitle}>주문상품</h3>
-                            <h3 css={S.SPrice}>{priceInfo.buyPricetotal.toLocaleString("ko-KR")}원</h3>
+                            <h3 css={S.SPrice}>{priceInfo.buyPricetotal?.toLocaleString("ko-KR")}원</h3>
                         </div>
                         <div css={S.SPriceBox}>
                             <h3 css={S.SPriceTitle}>배송비</h3>
-                            <h3 css={S.SPrice}>+ {priceInfo.shippingCost.toLocaleString("ko-KR")}원</h3>
+                            <h3 css={S.SPrice}>+ {priceInfo.shippingCost?.toLocaleString("ko-KR")}원</h3>
                         </div>
                         <div css={S.SPriceBox}>
                             <h3 css={S.SPriceTitle}>최종금액</h3>
-                            <h3 css={S.SPrice}>{priceInfo.finalPrice.toLocaleString("ko-KR")}원</h3>
+                            <h3 css={S.SPrice}>{priceInfo.finalPrice?.toLocaleString("ko-KR")}원</h3>
                         </div>
                 </div>
 

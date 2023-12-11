@@ -96,8 +96,7 @@ function AdminOrderDetail(props) {
                         <thead>
                             <tr css={S.SThBox}>
                                 <th>
-                                    주문 일자<br/>
-                                    [주문번호]
+                                    주문 일자
                                 </th>
                                 <th>주문자 번호</th>
                                 <th>받는 사람</th>
@@ -112,7 +111,6 @@ function AdminOrderDetail(props) {
                                 <tr key={getProduct?.data?.data.orderId} css={S.STdBox}>
                                     <td>
                                         {getProduct?.data?.data.orderDate}<br/>
-                                        [{getProduct?.data?.data.orderId}]
                                     </td>
                                     <td>{getProduct?.data?.data.userId}</td>
                                     <td>{getProduct?.data?.data.shippingName}</td>

@@ -106,27 +106,8 @@ function Outgoing(props) {
                         </tbody>
                 </table>
             </div>
-            {/* <button css={S.SInAddButton} onClick={handleNavigateAddIncomingPageClick}>
-                추가 출고
-            </button> */}
         </div>
     </Mypage>
-        // <Mypage>
-        //     <div css={S.SContainer}>
-        //     <h2>출고 조회</h2>
-        //         상품 사이즈별 번호 : 
-        //         <input value={productDtlIdInput} type='text' onChange={handleInputChange}/>
-        //         <button onClick={handleGetOutgoingClick}>출고 조회</button>
-        //         <ul>
-        //             {getData.map(data => {
-        //                 return <li key={data?.historyId}>출고번호 : {data?.historyId} /
-        //                 수량 : {data?.count} /
-        //                 날짜: {data?.createDate}</li>                   
-        //             })}
-        //         </ul>
-        //         <button onClick={handleNavigateAddIncomingPageClick}>추가 출고</button>
-        //     </div>
-        // </Mypage>
     );
 }
 

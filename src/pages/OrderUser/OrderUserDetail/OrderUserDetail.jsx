@@ -73,8 +73,7 @@ function OrderUserDetail(props) {
                     <thead>
                         <tr css={S.SThBox}>
                             <th>
-                                주문일자<br/>
-                                [주문번호]
+                                주문일자
                             </th>
                             <th>받는 사람</th>
                             <th>휴대전화</th>
@@ -87,7 +86,6 @@ function OrderUserDetail(props) {
                             <tr key={getOrderDtl?.data?.data.orderId} css={S.STdBox}>
                                 <td>
                                     {getOrderDtl?.data?.data.orderDate}<br/>
-                                    [{getOrderDtl?.data?.data.orderId}]
                                 </td>
                                 <td>{getOrderDtl?.data?.data.shippingName}</td>
                                 <td>{getOrderDtl?.data?.data.shippingPhone}</td>

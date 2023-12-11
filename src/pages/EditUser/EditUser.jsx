@@ -102,6 +102,7 @@ function EditUser(props) {
             try {
                 const response = await deleteUserApi(userId, option);
                 alert("회원 탈퇴 처리가 완료되었습니다.");
+                localStorage.removeItem("accessToken");
                 window.location.replace("/");
             } catch (error) {
                 alert(error.response.data);

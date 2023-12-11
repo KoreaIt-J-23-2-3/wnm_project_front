@@ -6,6 +6,7 @@ import { useQuery, useQueryClient } from 'react-query';
 import { deleteAdminToUserApi, getUserCountApi, getUsersApi } from '../../../apis/api/user';
 import { useNavigate } from 'react-router-dom';
 import PageNation from '../../../utils/PageNation/PageNation';
+import Swal from 'sweetalert2';
 
 function getStartIndex(currentPage) {
     const startIndex = parseInt(currentPage) % 5 === 0 ? parseInt(currentPage) - 4 : parseInt(currentPage) - (parseInt(currentPage) % 5) + 1;
@@ -73,7 +74,7 @@ function UserData(props) {
     }, [searchInput])
 
 
-     const getUserData = useQuery(["getUserData"], async () => {
+    const getUserData = useQuery(["getUserData"], async () => {
         try {
             const option = {
                 headers: {
@@ -153,22 +154,41 @@ function UserData(props) {
     }
 
     const handleUserDeleteOnClick = async (userId) => {
-        try {
-            if(window.confirm("선택하신 회원님을 삭제시키겠습니까?")) {
-                const option = {
-                    headers: {
-                        Authorization: localStorage.getItem("accessToken")
+        Swal.fire({
+            icon: "question",
+            title: "삭제 확인",
+            text: "선택하신 회원님을 탈퇴시키겠습니까?",
+
+            showCancelButton: true,
+            confirmButtonText: "확인",
+            confirmButtonColor: "#3085d6",
+            cancelButtonText: "취소",
+            cancelButtonColor: "#d33"
+        }).then((result) => {
+            if(result.isConfirmed) {
+                try {
+                    const option = {
+                        headers: {
+                            Authorization: localStorage.getItem("accessToken")
+                        }
                     }
-                }
-                await deleteAdminToUserApi(userId, option)
-                getUserData.refetch();
-            } else {
-                alert("회원 삭제가 취소되었습니다.")
+                    deleteAdminToUserApi(userId, option)
+                    Swal.fire({
+                        icon: "success",
+                        title: "삭제 성공",
+                        text: "탈퇴 되었습니다."
+                    }).then((result) => {
+                        if(result.isConfirmed) {
+                            getUserData.refetch();
+                        }
+                    })
+                } catch (error) {
+                    alert(error.message)
+                } 
+            } else if(result.isDismissed) {
+                
             }
-            
-        } catch(error) {
-            console.log(error)
-        }
+        })
     }
     
     if(getUserData.isLoading || getUserCount.isLoading) {
@@ -198,8 +218,6 @@ function UserData(props) {
         const respTotalPageIndex = getTotalPageIndex(respStartIndex, respEndIndex)
         setTotalPageIndex(respTotalPageIndex)
     }
-
-    
 
     return (
         <Mypage>

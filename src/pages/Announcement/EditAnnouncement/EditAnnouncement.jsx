@@ -5,6 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useQueryClient } from 'react-query';
 import { editAnnouncementApi, getAnnouncementByIdApi } from '../../../apis/api/announcement';
 import Mypage from '../../Mypage/Mypage';
+import Swal from 'sweetalert2';
 
 function EditAnnouncement(props) {
 
@@ -30,8 +31,6 @@ function EditAnnouncement(props) {
                     isPinned: response?.data?.isPinned,
                     createDate: response?.data?.createDate,
                 });
-                console.log("isPinned response 가져온걸로 바뀜?" , response?.data?.isPinned)
-                console.log("isPinned 상태 announcementData로 바뀜?" , announcementData.isPinned)
             } catch (error) {
                 console.error(error);
             }
@@ -73,9 +72,15 @@ function EditAnnouncement(props) {
             }
             console.log(announcementId)
             const response = await editAnnouncementApi(announcementId, announcementData, option);
-            alert("수정이 완료되었습니다.");
-            navigate("/notice");
-
+            Swal.fire({
+                icon: "success",
+                title: "수정 성공",
+                text: "공지사항이 수정 되었습니다."
+            }).then((result) => {
+                if(result.isConfirmed) {
+                    navigate("/notice")
+                }
+            })
             return response;
         } catch (error) {
             alert(error)

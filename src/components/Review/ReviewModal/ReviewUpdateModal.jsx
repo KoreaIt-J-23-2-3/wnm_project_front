@@ -77,8 +77,9 @@ function ReviewUpdateModal({ isOpen, onRequestClose, reviewData }) {
                     
                 }
                 await updateReviewApi(review, option);
-                if(window.confirm("리뷰수정이 완료되었습니다!")) {
+                if(window.confirm("리뷰수정 하시겠습니까?")) {
                     onRequestClose();
+                    alert("리뷰 수정완료 !!")
                     window.location.reload();
                 };
             }catch(error) {

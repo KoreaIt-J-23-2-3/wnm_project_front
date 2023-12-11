@@ -1,22 +1,16 @@
-import React, { useRef, useState, useEffect } from 'react';
-import { Navigate, useLocation, useNavigate, useParams} from 'react-router-dom';
+import React, { useState } from 'react';
+import { useParams} from 'react-router-dom';
 /** @jsxImportSource @emotion/react */
 import * as S from "./Style";
 import Mypage from '../Mypage/Mypage';
-import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
-import { storage } from '../../apis/firebase/firebase';
-import { getReviewByUserApi, removeReviewApi, updateReviewApi } from '../../apis/api/review'; // 필요한 API 함수 import
+import { getReviewByUserApi, removeReviewApi } from '../../apis/api/review'; // 필요한 API 함수 import
 import { useQuery, useQueryClient } from 'react-query';
 import ReviewUpdateModal from '../../components/Review/ReviewModal/ReviewUpdateModal';
 
 function Review() {
     const params = useParams();
     const userId = params.userId
-    const fileRef = useRef();
-    const navigate = useNavigate();
-    const [reviewfiles, setReviewFiles] = useState();
     const [previewImg, setPreviewImg] = useState("");
-    const [editedReview, setEditedReview] = useState({});
     const [getReview, setGetReivew ] = useState([]);
     const queryClient = useQueryClient();
     const principal = queryClient.getQueryState("getPrincipal");
@@ -62,6 +56,7 @@ function Review() {
                     }
                 }
                 await removeReviewApi(e.target.id, option);
+                alert("리뷰 삭제완료!!")
                 window.location.reload();
             }
         } catch (error) {
@@ -72,31 +67,37 @@ function Review() {
 
     return (
         <Mypage>
-            <div css={S.SLayout}>
-                {getReview?.map(rdata => {
-                    return <div key={rdata.reviewId} css={S.SModalContainer}>
-                                <div css={S.SModalHeader}>
-                                    <div css={S.SModalHeaderImg}>
-                                        <img src={rdata.productThumbnailUrl} alt={rdata.productName} />
+            {!!!getReviewbyUser.data.data[0]
+                ? <p css={S.SPText}>작성한 리뷰가 없습니다.</p>
+                :
+                <>
+                    <div css={S.SLayout}>
+                        {getReview?.map(rdata => {
+                            return <div key={rdata.reviewId} css={S.SModalContainer}>
+                                        <div css={S.SModalHeader}>
+                                            <div css={S.SModalHeaderImg}>
+                                                <img src={rdata.productThumbnailUrl} alt={rdata.productName} />
+                                            </div>
+                                            <div>
+                                                <h3>{rdata.productName}</h3>
+                                                <p>size: {rdata.sizeName}</p>
+                                            </div>
+                                        </div>
+                                    
+                                        <div css={S.SModalBody}>
+                                            <div css={S.SReviewImg}>
+                                                <img src={previewImg || rdata.reviewImgUrl} alt="" />
+                                            </div>
+                                            <textarea disabled={true} css={S.SText} defaultValue={rdata.reviewContent}></textarea>
+                                            <button id={rdata.reviewId} onClick={() => handleEditClick(rdata)} css={S.SButton}>수정하기</button>
+                                            <button id={rdata.reviewId} onClick={handleDeleteClick} css={S.SButton}>삭제하기</button>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <h3>{rdata.productName}</h3>
-                                        <p>size: {rdata.sizeName}</p>
-                                    </div>
-                                </div>
-                            
-                                <div css={S.SModalBody}>
-                                    <div css={S.SReviewImg}>
-                                        <img src={previewImg || rdata.reviewImgUrl} alt="" />
-                                    </div>
-                                    <textarea disabled={true} css={S.SText} defaultValue={rdata.reviewContent}></textarea>
-                                    <button id={rdata.reviewId} onClick={() => handleEditClick(rdata)} css={S.SButton}>수정하기</button>
-                                    <button id={rdata.reviewId} onClick={handleDeleteClick} css={S.SButton}>삭제하기</button>
-                                </div>
-                            </div>
-                })}
-            </div>
-            <ReviewUpdateModal isOpen={isOpen} onRequestClose={() => setOpen(false)} reviewData={selectedReview}/>
+                        })}
+                    </div>
+                    <ReviewUpdateModal isOpen={isOpen} onRequestClose={() => setOpen(false)} reviewData={selectedReview}/>
+                </>
+            }
         </Mypage>
     );
 }

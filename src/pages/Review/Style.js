@@ -1,5 +1,13 @@
 import { css } from "@emotion/react";
 
+export const SPText = css`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-size: 18px;
+`;
+
 export const SLayout = css`
     display: flex;
     flex-wrap: wrap;

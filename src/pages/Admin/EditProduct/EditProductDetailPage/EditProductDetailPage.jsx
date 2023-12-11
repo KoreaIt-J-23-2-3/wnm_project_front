@@ -283,7 +283,7 @@ function EditProductDetailPage(props) {
                             </div>
                         </div>
                     <div >
-                        <button css={S.SSubmit}onClick={handleUpdateSubmit} >등록하기</button>
+                        <button css={S.SSubmit}onClick={handleUpdateSubmit}>수정하기</button>
                     </div>
                 </div>
             </div>

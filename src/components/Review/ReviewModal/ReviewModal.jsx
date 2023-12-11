@@ -5,8 +5,7 @@ import * as S from './Style';
 import { addReviewApi } from '../../../apis/api/review';
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
 import { storage } from '../../../apis/firebase/firebase';
-import { Navigate, useNavigate, useParams } from 'react-router-dom'; 
-
+import { useNavigate } from 'react-router-dom'; 
 
 function ReviewModal({ isOpen, onRequestClose, product, userId }) {
 
@@ -62,6 +61,7 @@ function ReviewModal({ isOpen, onRequestClose, product, userId }) {
                 if(window.confirm("리뷰 등록 하시겠습니까?")) {
                     await addReviewApi(review, option);
                     onRequestClose()
+                    alert("리뷰 등록 완료!!")
                     navigate(`/mypage/${userId}/review`);
                 };
                 

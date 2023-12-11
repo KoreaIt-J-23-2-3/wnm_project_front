@@ -5,6 +5,7 @@ import Mypage from '../../Mypage/Mypage';
 import { writeAnnouncementApi } from '../../../apis/api/announcement';
 import { useQueryClient } from 'react-query';
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 function WriteAnnouncement(props) {
     const queryClient = useQueryClient();
@@ -48,9 +49,15 @@ function WriteAnnouncement(props) {
                 }
             }
             const response = await writeAnnouncementApi(announcementData, option)
-        
-            alert("등록이 완료되었습니다.")
-            navigate("/notice")
+            Swal.fire({
+                icon: "success",
+                title: "등록 성공",
+                text: "공지사항이 등록 되었습니다."
+            }).then((result) => {
+                if(result.isConfirmed) {
+                    navigate("/notice")
+                }
+            })
             return response;
         } catch (error) {
             alert(error)

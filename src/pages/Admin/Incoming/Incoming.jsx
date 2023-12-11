@@ -105,9 +105,6 @@ function Incoming(props) {
                             </tbody>
                     </table>
                 </div>
-                {/* <button css={S.SInAddButton} onClick={handleNavigateAddIncomingPageClick}>
-                    추가 입고
-                </button> */}
             </div>
         </Mypage>
     );

@@ -13,6 +13,7 @@ function OAuth2Signin(props) {
         } else {
             localStorage.setItem("accessToken", "Bearer " + searchParams.get("token"));
             queryClient.refetchQueries("getPrincipal");
+            alert("로그인 되었습니다.")
         }
     }, []);
 

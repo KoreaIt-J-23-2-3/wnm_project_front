@@ -161,76 +161,76 @@ function BuyProduct(props) {
     return (
         <RootContainer>
             <div>
-              <div css={S.SLayout}>
-                  <div css={S.STopContainer} >
-                      <div>
-                          <img css={S.SThumbnailImg} src={product.productThumbnailUrl} />
-                      </div>
-                      <div css={S.SOrderInfoBox}>
-                          <h2>{product.productName}</h2>
-                          <p dangerouslySetInnerHTML={{__html: product.productDetailText}}></p>
-                          <div css={S.SSelectBox}>
-                              <Select css={S.SSelect} onChange={selectOnChange} options={product.productDtlList?.map(pdt => {
-                                  return {
-                                      value: pdt.productDtlId,
-                                      label: `${pdt.size.sizeName === "no" ? product.productName : pdt.size.sizeName}${pdt.tempStock > 0 ? "(수량: " + pdt.tempStock + ")" : "(품절)"}`};
-                              })
-                              }/>
-                          </div>
-                          <ul css={S.SOrderListBox}>
-                              {selectedProducts.map((selectedProduct, index) => 
-                                  <li key={index}>
-                                      <div css={S.SListBox}>
-                                          <h5>
-                                              {product.productName}<br/>
-                                              -{selectedProduct.sizeName}
-                                          </h5>
-                                          <input type="number" defaultValue={1} min={1} max={99} onChange={(e) => countOnChange(e.target, index)}/>
-                                          <p>{selectedProduct.price.toLocaleString("ko-KR")}원</p>
-                                          <button onClick={() => handleDeleteProductOnClick(index)}>X</button>
-                                      </div>
-                                  </li>
-                              )}
-                          </ul>
-                          <div css={S.SPriceInfo}>
-                              <p>Total</p>
-                              <h3>{selectedProducts.reduce((total, selectedProduct) => {
-                                  return total += selectedProduct.price}, 0).toLocaleString("ko-KR")}원</h3>
-                          </div>
-                          <div css={S.SButtonBox}>
-                              <button onClick={buyNowOnClick}>BUY NOW</button>
-                              <button onClick={handleAddToCartOnClick}>ADD TO CART</button>
-                          </div>
-                      </div>
-                  </div>
-                  <div css={S.SDetailContainer}>
-                      <img css={S.SDDetailImg} src={product.productDetailUrl} alt="" />
-                  </div>
-              </div>
-              <div css={S.SReviewContainer}>
-                  <div css={S.SH1}>고객님들의 소중한 구매후기 ⭐</div>
-                  <ul>
-                      {productReview.map(rev => {
-                          return <li>
-                              <div css={S.SReviewList}>
-                                  <div css={S.SreviewHeader}>
-                                      <img src={rev.profileUrl} alt=""/>
-                                      <div css={S.SNickname}>{rev.nickname}</div>
-                                      <div css={S.SProductSizeBox}>
-                                          <div>{product.productName} / </div>
-                                          <div> size {rev.sizeName}</div>
-                                      </div>
-                                      <div css={S.SReivewDate}>{rev.reviewDate}</div>
-                                  </div>
-                                  <div css={S.SReviewContentBox}>
-                                      {!!rev.reviewImgUrl ? <div><img src={rev.reviewImgUrl} alt="" css={S.SReviewImg}/></div> : <div></div>}
-                                      <div css={S.SReviewContent}>{rev.reviewContent}</div>
-                                  </div>
-                              </div>
-                          </li>
-                      })}
-                  </ul>
-              </div>
+                <div css={S.SLayout}>
+                    <div css={S.STopContainer} >
+                        <div>
+                            <img css={S.SThumbnailImg} src={product.productThumbnailUrl} />
+                        </div>
+                        <div css={S.SOrderInfoBox}>
+                            <h2>{product.productName}</h2>
+                            <p dangerouslySetInnerHTML={{__html: product.productDetailText}}></p>
+                            <div css={S.SSelectBox}>
+                                <Select css={S.SSelect} onChange={selectOnChange} options={product.productDtlList?.map(pdt => {
+                                    return {
+                                        value: pdt.productDtlId,
+                                        label: `${pdt.size.sizeName === "no" ? product.productName : pdt.size.sizeName}${pdt.tempStock > 0 ? "(수량: " + pdt.tempStock + ")" : "(품절)"}`};
+                                })
+                                }/>
+                            </div>
+                            <ul css={S.SOrderListBox}>
+                                {selectedProducts.map((selectedProduct, index) => 
+                                    <li key={index}>
+                                        <div css={S.SListBox}>
+                                            <h5>
+                                                {product.productName}<br/>
+                                                -{selectedProduct.sizeName}
+                                            </h5>
+                                            <input type="number" defaultValue={1} min={1} max={99} onChange={(e) => countOnChange(e.target, index)}/>
+                                            <p>{selectedProduct.price.toLocaleString("ko-KR")}원</p>
+                                            <button onClick={() => handleDeleteProductOnClick(index)}>X</button>
+                                        </div>
+                                    </li>
+                                )}
+                            </ul>
+                            <div css={S.SPriceInfo}>
+                                <p>Total</p>
+                                <h3>{selectedProducts.reduce((total, selectedProduct) => {
+                                    return total += selectedProduct.price}, 0).toLocaleString("ko-KR")}원</h3>
+                            </div>
+                            <div css={S.SButtonBox}>
+                                <button onClick={buyNowOnClick}>BUY NOW</button>
+                                <button onClick={handleAddToCartOnClick}>ADD TO CART</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div css={S.SDetailContainer}>
+                        <img css={S.SDDetailImg} src={product.productDetailUrl} alt="" />
+                    </div>
+                </div>
+                <div css={S.SReviewContainer}>
+                    <div css={S.SH1}>고객님들의 소중한 구매후기 ⭐</div>
+                    <ul>
+                        {productReview.map(rev => {
+                            return <li>
+                                <div css={S.SReviewList}>
+                                    <div css={S.SreviewHeader}>
+                                        <img src={rev.profileUrl} alt=""/>
+                                        <div css={S.SNickname}>{rev.nickname}</div>
+                                        <div css={S.SProductSizeBox}>
+                                            <div>{product.productName} / </div>
+                                            <div> size {rev.sizeName}</div>
+                                        </div>
+                                        <div css={S.SReivewDate}>{rev.reviewDate}</div>
+                                    </div>
+                                    <div css={S.SReviewContentBox}>
+                                        {!!rev.reviewImgUrl ? <div><img src={rev.reviewImgUrl} alt="" css={S.SReviewImg}/></div> : <div></div>}
+                                        <div css={S.SReviewContent}>{rev.reviewContent}</div>
+                                    </div>
+                                </div>
+                            </li>
+                        })}
+                    </ul>
+                </div>
             </div>
         </RootContainer>
     );
