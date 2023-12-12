@@ -6,6 +6,7 @@ import { useQuery, useQueryClient } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 import Mypage from '../../Mypage/Mypage';
 import PageNation from '../../../utils/PageNation/PageNation';
+import Swal from 'sweetalert2';
 
 function getStartIndex(currentPage) {
     const startIndex = parseInt(currentPage) % 5 === 0 ? parseInt(currentPage) - 4 : parseInt(currentPage) - (parseInt(currentPage) % 5) + 1;
@@ -162,11 +163,23 @@ function AdminOrder(props) {
     const handleUpdateOrderStatusClick = async (data) => {
         try {
             if(data.orderStatus === orderStatus) {
-                alert("같은 상태로는 변경할 수 없습니다.")
+                Swal.fire({
+                    title: "변경 실패",
+                    text: "같은 배송 상태로는 변경할 수 없습니다."
+                }).then((result) => {
+                    if(result.isConfirmed) {
+                    }
+                })
                 return;
             }
             await updateOrderStatusApi(parseInt(data.orderId), parseInt(orderStatus), option)
-            alert("배송상태 수정 완료")
+            Swal.fire({
+                title: "변경 성공",
+                text: "배송 상태 변경 완료"
+            }).then((result) => {
+                if(result.isConfirmed) {
+                }
+            })
             getOrders.refetch()
         } catch (error) {
             alert(error.response.data)

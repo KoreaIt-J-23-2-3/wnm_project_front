@@ -138,7 +138,6 @@ function ProductRegist(props) {
     }
 
     const handleProductSubmitClick = async () => {
-        console.log("post요청 직전" + product)
         try {
             const option = {
                 headers: {

@@ -50,7 +50,6 @@ function WriteAnnouncement(props) {
             }
             const response = await writeAnnouncementApi(announcementData, option)
             Swal.fire({
-                icon: "success",
                 title: "등록 성공",
                 text: "공지사항이 등록 되었습니다."
             }).then((result) => {

@@ -155,7 +155,6 @@ function UserData(props) {
 
     const handleUserDeleteOnClick = async (userId) => {
         Swal.fire({
-            icon: "question",
             title: "삭제 확인",
             text: "선택하신 회원님을 탈퇴시키겠습니까?",
 
@@ -174,7 +173,6 @@ function UserData(props) {
                     }
                     deleteAdminToUserApi(userId, option)
                     Swal.fire({
-                        icon: "success",
                         title: "삭제 성공",
                         text: "탈퇴 되었습니다."
                     }).then((result) => {

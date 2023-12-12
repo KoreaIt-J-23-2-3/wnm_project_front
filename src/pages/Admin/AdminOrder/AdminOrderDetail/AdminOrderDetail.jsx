@@ -8,6 +8,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { getUserOrderDetailApi, updateOrderStatusApi } from '../../../../apis/api/order';
 
 import Mypage from '../../../Mypage/Mypage';
+import Swal from 'sweetalert2';
 
 function AdminOrderDetail(props) {
     const queryClient = useQueryClient();
@@ -66,12 +67,24 @@ function AdminOrderDetail(props) {
     const handleUpdateOrderStatusClick = async () => {
         try {
             if(getProduct?.data?.data.orderStatus === orderStatus) {
-                alert("같은 상태로는 변경할 수 없습니다.")
+                Swal.fire({
+                    title: "변경 실패",
+                    text: "같은 배송 상태로는 변경할 수 없습니다."
+                }).then((result) => {
+                    if(result.isConfirmed) {
+                    }
+                })
                 return;
             }
 
             await updateOrderStatusApi(orderId, parseInt(orderStatus), option)
-            alert("배송상태 수정 완료")
+            Swal.fire({
+                title: "변경 성공",
+                text: "배송 상태 변경 완료"
+            }).then((result) => {
+                if(result.isConfirmed) {
+                }
+            })
             getProduct.refetch()
         } catch (error) {
             console.log(error.response.data)

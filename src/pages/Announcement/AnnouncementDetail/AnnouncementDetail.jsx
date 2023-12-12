@@ -39,8 +39,7 @@ function AnnouncementDetail(props) {
     }
 
     const handleDeleteClick = async (announcementDataId) => {
-        Swal.fire({
-            icon: "question",
+        await Swal.fire({
             title: "삭제 확인",
             text: "공지사항을 삭제 하시겠습니까?",
 
@@ -59,7 +58,6 @@ function AnnouncementDetail(props) {
                     }
                     const response = deleteAnnouncementApi(announcementDataId, option);
                     Swal.fire({
-                        icon: "success",
                         title: "삭제 성공",
                         text: "공지사항이 삭제 되었습니다."
                     }).then((result) => {

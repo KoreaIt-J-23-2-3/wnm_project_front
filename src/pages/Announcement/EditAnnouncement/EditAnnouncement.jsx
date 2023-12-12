@@ -70,10 +70,8 @@ function EditAnnouncement(props) {
                     Authorization: localStorage.getItem("accessToken")
                 }
             }
-            console.log(announcementId)
             const response = await editAnnouncementApi(announcementId, announcementData, option);
             Swal.fire({
-                icon: "success",
                 title: "수정 성공",
                 text: "공지사항이 수정 되었습니다."
             }).then((result) => {
@@ -83,7 +81,7 @@ function EditAnnouncement(props) {
             })
             return response;
         } catch (error) {
-            alert(error)
+            console.log(error)
         }
     }
 
