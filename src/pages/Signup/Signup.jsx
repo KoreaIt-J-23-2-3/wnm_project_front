@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import * as S from "./Style";
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { instance } from '../../apis/config/instance';
 import { signupApi } from '../../apis/api/sign';
+import Swal from 'sweetalert2';
 /**@jsxImportSource @emotion/react */
 
 function Signup(props) {
@@ -71,8 +71,14 @@ function Signup(props) {
 
     useEffect(() => {
         if(!searchParams.get("provider")){
-            alert("정상적인 접근이 아닙니다.")
-            navigate("/")
+            Swal.fire({
+                title: "비정상 접근",
+                text: "정상적인 접근이 아닙니다."
+            }).then((result) => {
+                if(result.isConfirmed) {
+                    navigate("/")
+                }
+            })
         }
     })
 
@@ -89,10 +95,19 @@ function Signup(props) {
     const handleSignupSubmit = async () => {
         try {
             await signupApi(signupUser);
-            alert("회원가입 완료");
-            window.location.replace("/auth/signin");
+            Swal.fire({
+                title: "회원가입 성공",
+                text: "회원가입 되었습니다."
+            }).then((result) => {
+                if(result.isConfirmed) {
+                    window.location.replace("/auth/signin");
+                }
+            })
         }catch(error) {
-            alert("회원가입 중 오류가 발생하였습니다.")
+            Swal.fire({
+                title: "회원가입 오류",
+                text: "회원가입 중 오류가 발생하였습니다."
+            })
         }
     }
 

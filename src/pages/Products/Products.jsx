@@ -5,7 +5,6 @@ import * as S from '../Products/Style';
 import { getAllProductsApi, getProductsCountApi } from '../../apis/api/product';
 import RootContainer from '../../components/RootContainer/RootContainer';
 import { useNavigate, useParams } from 'react-router-dom';
-import PageNation from '../../utils/PageNation/PageNation';
 
 function getStartIndex(currentPage) {
     const startIndex = parseInt(currentPage) % 5 === 0 ? parseInt(currentPage) - 4 : parseInt(currentPage) - (parseInt(currentPage) % 5) + 1;

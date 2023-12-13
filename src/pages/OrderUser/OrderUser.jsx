@@ -4,7 +4,8 @@ import * as S from './Style';
 import { useQuery, useQueryClient } from 'react-query';
 import Mypage from '../Mypage/Mypage';
 import { getUserOrderApi, updateConfirmationApi } from '../../apis/api/order';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 function OrderUser(props) {
     const navigate = useNavigate();
@@ -51,9 +52,14 @@ function OrderUser(props) {
                 }
             }
             await updateConfirmationApi(parseInt(data.orderId), option);
-            alert("구매확정!!")
-            getOrderUserProduct.refetch()
-
+            Swal.fire({
+                title: "구매 확정",
+                text: "해당 주문 상품이 구매 확정 되었습니다."
+            }).then((result) => {
+                if(result.isConfirmed) {
+                    getOrderUserProduct.refetch()
+                }
+            })
         } catch(error) {
             console.log(error)
         }

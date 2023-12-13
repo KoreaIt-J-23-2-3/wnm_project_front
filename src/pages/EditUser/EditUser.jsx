@@ -6,6 +6,7 @@ import { useQueryClient } from 'react-query';
 import { deleteUserApi, updateUserApi } from '../../apis/api/user';
 import Mypage from '../Mypage/Mypage';
 import { useNavigate, useParams } from 'react-router-dom';
+import Swal from 'sweetalert2';
 /** @jsxImportSource @emotion/react */
 
 function EditUser(props) {
@@ -36,6 +37,10 @@ function EditUser(props) {
     useEffect(() => {
         if(!principal.data) {
             navigate("/auth/signin")
+            Swal.fire({
+                title: "비정상 접근",
+                text: "로그인 후 사용해주세요."
+            })
             return
         }
     }, [])

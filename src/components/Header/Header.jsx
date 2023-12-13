@@ -5,6 +5,7 @@ import logo from '../../images/Logo/LongLogo_lg.png'
 import { Link, useNavigate } from 'react-router-dom';
 import { TbShoppingBag } from "react-icons/tb";
 import { useQueryClient } from 'react-query';
+import Swal from 'sweetalert2';
 
 function Header(props) {
     const navigate = useNavigate();
@@ -25,8 +26,14 @@ function Header(props) {
 
     const handleLogoutOnClick = () => {
         localStorage.removeItem("accessToken");
-        alert("로그아웃 되었습니다.")
-        window.location.replace("/")
+        Swal.fire({
+            title: "로그아웃 성공",
+            text: "로그아웃 되었습니다."
+        }).then((result) => {
+            if(result.isConfirmed) {
+                window.location.replace("/")
+            }
+        })
     }
 
     const handleGoToCartOnClick = () => {

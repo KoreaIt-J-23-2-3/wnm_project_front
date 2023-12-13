@@ -6,6 +6,7 @@ import Mypage from '../Mypage/Mypage';
 import { getReviewByUserApi, removeReviewApi } from '../../apis/api/review'; // 필요한 API 함수 import
 import { useQuery, useQueryClient } from 'react-query';
 import ReviewUpdateModal from '../../components/Review/ReviewModal/ReviewUpdateModal';
+import Swal from 'sweetalert2';
 
 function Review() {
     const params = useParams();
@@ -48,20 +49,39 @@ function Review() {
     }
 
     const handleDeleteClick = async (e) => {
-        try {
-            if(window.confirm("리뷰 삭제 하시겠습니까?")) {
-                const option = {
-                    headers: {
-                        Authorization: localStorage.getItem("accessToken") || ""
+        Swal.fire({
+            title: "삭제 확인",
+            text: "리뷰를 삭제 하시겠습니까?",
+
+            showCancelButton: true,
+            confirmButtonText: "확인",
+            confirmButtonColor: "#3085d6",
+            cancelButtonText: "취소",
+            cancelButtonColor: "#d33"
+        }).then((result) => {
+            if(result.isConfirmed) {
+                try {
+                    const option = {
+                        headers: {
+                            Authorization: localStorage.getItem("accessToken")
+                        }
                     }
-                }
-                await removeReviewApi(e.target.id, option);
-                alert("리뷰 삭제완료!!")
-                window.location.reload();
+                    removeReviewApi(e.target.id, option)
+                    Swal.fire({
+                        title: "삭제 성공",
+                        text: "리뷰가 삭제되었습니다."
+                    }).then((result) => {
+                        if(result.isConfirmed) {
+                            window.location.reload();
+                        }
+                    })
+                } catch (error) {
+                    alert(error.message)
+                } 
+            } else if(result.isDismissed) {
+                
             }
-        } catch (error) {
-            console.error(error);
-        }
+        })
     };
 
 

@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 /** @jsxImportSource @emotion/react */
 import * as S from './Style';
 import RootContainer from '../../components/RootContainer/RootContainer';
+import Swal from 'sweetalert2';
 
 function Mypage({ children }) {
     const navigate = useNavigate()
@@ -12,8 +13,11 @@ function Mypage({ children }) {
 
     useEffect(() => {
         if(!principal.data) {
-            alert("로그인 후 사용해주세요.")
             navigate("/auth/signin")
+            Swal.fire({
+                title: "비정상 접근",
+                text: "로그인 후 사용해주세요."
+            })
             return
         }
     }, [])
