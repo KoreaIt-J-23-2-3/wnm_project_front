@@ -7,6 +7,7 @@ import { addProductApi } from '../../../apis/api/product';
 import Mypage from '../../Mypage/Mypage';
 import { useQueryClient } from 'react-query';
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 function ProductRegist(props) {
     const queryClient = useQueryClient();
@@ -54,22 +55,49 @@ function ProductRegist(props) {
 
     useEffect(() => {
         if(principal?.data?.data.roleName !== "ROLE_ADMIN" || !principal?.data) {
-            alert("정상적인 접근이 아닙니다.")
             navigate("/")
+            Swal.fire({
+                title: "비정상 접근",
+                text: "정상적인 접근이 아닙니다."
+            })
+            return;
         }
     }, [])
 
-    const handleProductDetailImgUploadClick = () => {
-        if(window.confirm("상품 사진을 등록하시겠습니까?")) {
-            productDetailImgRef.current.click();
-        }
+    const handleProductThumnailImgUploadClick = () => {
+        Swal.fire({
+            title: "상품 메인 사진 등록",
+            text: "상품 메인 사진을 등록하시겠습니까?",
+
+            showCancelButton: true,
+            confirmButtonText: "확인",
+            confirmButtonColor: "#3085d6",
+            cancelButtonText: "취소",
+            cancelButtonColor: "#d33"
+        }).then((result) => {
+            if(result.isConfirmed) {
+                productThumnailImgRef.current.click();
+            }
+        })
     }
 
-    const handleProductThumnailImgUploadClick = () => {
-        if(window.confirm("상품 사진을 등록하시겠습니까?")) {
-            productThumnailImgRef.current.click();
-        }
+    const handleProductDetailImgUploadClick = () => {
+        Swal.fire({
+            title: "상품 상세 사진 등록",
+            text: "상품 상세 사진을 등록하시겠습니까?",
+
+            showCancelButton: true,
+            confirmButtonText: "확인",
+            confirmButtonColor: "#3085d6",
+            cancelButtonText: "취소",
+            cancelButtonColor: "#d33"
+        }).then((result) => {
+            if(result.isConfirmed) {
+                productDetailImgRef.current.click();
+            }
+        })
     }
+
 
     const handleProductThumnailImgChange = (e) => {
         const file = e.target.files[0];
@@ -146,8 +174,14 @@ function ProductRegist(props) {
                 }
             }
             await addProductApi(product, option);
-            alert("상품 등록 완료")
-            window.location.replace("/admin/product/edit")
+            Swal.fire({
+                title: "상품 등록",
+                text: "상품이 등록 되었습니다."
+            }).then((result) => {
+                if(result.isConfirmed) {
+                    window.location.replace("/admin/product/edit")
+                }
+            })
         } catch (error) {
             console.error(error);
         }    

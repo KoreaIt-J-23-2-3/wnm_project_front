@@ -5,6 +5,7 @@ import { addIncomingApi, getIncomingApi } from '../../../apis/api/incoming';
 import { useNavigate } from 'react-router';
 import Mypage from '../../Mypage/Mypage';
 import { useQueryClient } from 'react-query';
+import Swal from 'sweetalert2';
 
 function Incoming(props) {
     const navigate = useNavigate();
@@ -22,8 +23,12 @@ function Incoming(props) {
 
     useEffect(() => {
         if(principal?.data?.data.roleName !== "ROLE_ADMIN" || !principal?.data) {
-            alert("정상적인 접근이 아닙니다.")
             navigate("/")
+            Swal.fire({
+                title: "비정상 접근",
+                text: "정상적인 접근이 아닙니다."
+            })
+            return;
         }
     }, [])
 
@@ -41,10 +46,6 @@ function Incoming(props) {
         }        
     }
 
-    const handleNavigateAddIncomingPageClick = () => {
-        navigate("/admin/incoming/add")
-    }
-
     const handleAddIncomingClick = async () => {
         try {
             const option = {
@@ -53,7 +54,10 @@ function Incoming(props) {
                 }
             }
             const response = await addIncomingApi(parseInt(productDtlId), parseInt(count), option);
-            alert("상품이 입고되었습니다.")
+            Swal.fire({
+                title: "입고 완료",
+                text: "상품이 입고되었습니다."
+            })
         } catch (error) {
             console.log(error.response.data)
         }

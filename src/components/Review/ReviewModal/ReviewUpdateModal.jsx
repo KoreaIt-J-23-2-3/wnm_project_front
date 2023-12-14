@@ -6,6 +6,7 @@ import { addReviewApi, updateReviewApi } from '../../../apis/api/review';
 import { deleteObject, getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
 import { storage } from '../../../apis/firebase/firebase';
 import { Navigate, useNavigate, useParams } from 'react-router-dom'; 
+import Swal from 'sweetalert2';
 
 
 function ReviewUpdateModal({ isOpen, onRequestClose, reviewData }) {
@@ -76,12 +77,29 @@ function ReviewUpdateModal({ isOpen, onRequestClose, reviewData }) {
                     }
                     
                 }
-                await updateReviewApi(review, option);
-                if(window.confirm("리뷰수정 하시겠습니까?")) {
-                    onRequestClose();
-                    alert("리뷰 수정완료 !!")
-                    window.location.reload();
-                };
+                Swal.fire({
+                    title: "리뷰 수정 확인",
+                    text: "리뷰를 수정 하시겠습니까?",
+        
+                    showCancelButton: true,
+                    confirmButtonText: "확인",
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonText: "취소",
+                    cancelButtonColor: "#d33"
+                }).then(async (result) => {
+                    if(result.isConfirmed) {
+                        await updateReviewApi(review, option);
+                        Swal.fire({
+                            title: "수정 완료",
+                            text: "리뷰가 수정 되었습니다."
+                        }).then((ok) => {
+                            if(ok.isConfirmed) {
+                                onRequestClose()
+                                window.location.reload();
+                            }
+                        })
+                    }
+                })
             }catch(error) {
                 console.error(error);  
         }

@@ -61,8 +61,12 @@ function UserData(props) {
 
     useEffect(() => {
         if(principal?.data?.data.roleName !== "ROLE_ADMIN" || !principal?.data) {
-            alert("정상적인 접근이 아닙니다.")
             navigate("/")
+            Swal.fire({
+                title: "비정상 접근",
+                text: "정상적인 접근이 아닙니다."
+            })
+            return;
         }
     }, [])
 
@@ -154,7 +158,7 @@ function UserData(props) {
     }
 
     const handleUserDeleteOnClick = async (userId) => {
-        Swal.fire({
+        await Swal.fire({
             title: "삭제 확인",
             text: "선택하신 회원님을 탈퇴시키겠습니까?",
 
@@ -163,7 +167,7 @@ function UserData(props) {
             confirmButtonColor: "#3085d6",
             cancelButtonText: "취소",
             cancelButtonColor: "#d33"
-        }).then((result) => {
+        }).then(async (result) => {
             if(result.isConfirmed) {
                 try {
                     const option = {
@@ -171,7 +175,7 @@ function UserData(props) {
                             Authorization: localStorage.getItem("accessToken")
                         }
                     }
-                    deleteAdminToUserApi(userId, option)
+                    await deleteAdminToUserApi(userId, option)
                     Swal.fire({
                         title: "삭제 성공",
                         text: "탈퇴 되었습니다."

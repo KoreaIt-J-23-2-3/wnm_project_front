@@ -50,8 +50,12 @@ function EditAnnouncement(props) {
 
     useEffect(() => {
         if(principal?.data?.data.roleName !== "ROLE_ADMIN" || !principal?.data) {
-            alert("정상적인 접근이 아닙니다.")
             navigate("/")
+            Swal.fire({
+                title: "비정상 접근",
+                text: "정상적인 접근이 아닙니다."
+            })
+            return;
         }
     }, [])
 

@@ -5,6 +5,7 @@ import { addOutgoingApi, getOutgoingApi } from '../../../apis/api/outgoing';
 import { useNavigate } from 'react-router';
 import Mypage from '../../Mypage/Mypage';
 import { useQueryClient } from 'react-query';
+import Swal from 'sweetalert2';
 
 function Outgoing(props) {
     const queryClient = useQueryClient();
@@ -22,8 +23,12 @@ function Outgoing(props) {
 
     useEffect(() => {
         if(principal?.data?.data.roleName !== "ROLE_ADMIN" || !principal?.data) {
-            alert("정상적인 접근이 아닙니다.")
             navigate("/")
+            Swal.fire({
+                title: "비정상 접근",
+                text: "정상적인 접근이 아닙니다."
+            })
+            return;
         }
     }, [])
 
@@ -50,7 +55,10 @@ function Outgoing(props) {
                 }
             }
             const response = await addOutgoingApi(parseInt(productDtlId), parseInt(count), option);
-            alert("상품이 출고되었습니다.")
+            Swal.fire({
+                title: "출고 완료",
+                text: "상품이 출고되었습니다."
+            })
         } catch (error) {
             console.log(error.response.data)
         }
@@ -62,10 +70,6 @@ function Outgoing(props) {
         }else {
             setProductDtlId(e.target.value)
         }
-    }
-
-    const handleNavigateAddIncomingPageClick = () => {
-        navigate("/admin/outgoing/add")
     }
 
     return (

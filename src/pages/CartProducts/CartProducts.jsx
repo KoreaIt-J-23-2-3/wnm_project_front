@@ -6,6 +6,7 @@ import { useQuery, useQueryClient } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 import { deleteCartApi, getCartApi } from '../../apis/api/cart';
 import RootContainer from '../../components/RootContainer/RootContainer';
+import Swal from 'sweetalert2';
 
 function CartProducts(props) {
     const navigate = useNavigate()
@@ -45,9 +46,12 @@ function CartProducts(props) {
 
     useEffect(() => {
         if(!principal.data) {
-            alert("로그인 후 사용해주세요.")
             navigate("/auth/signin")
-            return
+            Swal.fire({
+                title: "비정상 접근",
+                text: "로그인 후 사용해주세요."
+            })
+            return;
         }
     }, [])
 
@@ -75,34 +79,47 @@ function CartProducts(props) {
     }
 
     const handleDeleteProductOnClick = async (index) => {
-        
-        if(window.confirm("선택하신 상품을 삭제하시겠습니까? ")) {
-            try {
-                const option = {
-                    headers: {
-                        Authorization: localStorage.getItem("accessToken")
-                    }
-                }
+        await Swal.fire({
+            title: "삭제 확인",
+            text: "선택하신 상품을 삭제하시겠습니까?",
 
-                console.log("삭제 전 상태:", cartProducts);
-                const response = await deleteCartApi(cartProducts[index].cartId, option);
-                if (response.data === true) {
-                    console.log("서버 응답:", response);
-                    const deleteProduct = [...cartProducts]
-                    deleteProduct.splice(index, 1);
-                    console.log("삭제 후 상태:", deleteProduct);
-                    setCartProducts(deleteProduct);
-                    window.location.reload();
-                } else {
-                    throw new Error("상품 삭제 실패")
+            showCancelButton: true,
+            confirmButtonText: "확인",
+            confirmButtonColor: "#3085d6",
+            cancelButtonText: "취소",
+            cancelButtonColor: "#d33"
+        }).then(async (result) => {
+            if(result.isConfirmed) {
+                try {
+                    const option = {
+                        headers: {
+                            Authorization: localStorage.getItem("accessToken")
+                        }
+                    }
+                    const response = await deleteCartApi(cartProducts[index].cartId, option);
+                    if (response.data === true) {
+                        Swal.fire({
+                            title: "삭제 성공",
+                            text: "상품을 삭제했습니다."
+                        }).then((result) => {
+                            if(result.isConfirmed) {
+                                const deleteProduct = [...cartProducts]
+                                deleteProduct.splice(index, 1);
+                                setCartProducts(deleteProduct);
+                                window.location.reload();
+                            }
+                        })
+                    } else {
+                        Swal.fire({
+                            title: "삭제 실패",
+                            text: "상품 삭제에 실패했습니다.",
+                        });
+                    }
+                } catch (error) {
+                    console.error("에러 발생:", error);
                 }
-            } catch(error) {
-                console.log(error)
             }
-        }else {
-            return;
-        }
-        
+        })
     }
 
     const handleShowpingOnClick = () => {
@@ -111,17 +128,27 @@ function CartProducts(props) {
 
     const handleBuyOnClick = () => {
         if(!principal.data) {
-            alert("로그인 후 사용해주세요.")
             navigate("/auth/signin")
+            Swal.fire({
+                title: "비정상 접근",
+                text: "로그인 후 사용해주세요."
+            })
         } else {
             if(selectedCartProduct.length === 0) {
-                alert("상품을 선택해주세요.")
+                Swal.fire({
+                    title: "상품 없음",
+                    text: "상품을 선택해주세요.",
+                });
             } else {
                 const overStockProducts = cartProducts.filter(cp => selectedCartProduct.filter(scp => scp.productDtlId === cp.productDtl.productDtlId)[0]?.count > cp.productDtl.tempStock);
                 if(overStockProducts.length > 0) {
-                    alert(`상품의 재고가 부족합니다.\n${overStockProducts?.map(osp => {
-                        return `${osp.productDtl.productMst.productName}[size: ${osp.productDtl.size.sizeName}]\n`
-                    }).join("")}`)
+                    const message = overStockProducts?.map(osp => {
+                        return `${osp.productDtl.productMst.productName}<br>[size: ${osp.productDtl.size.sizeName}]\n`
+                    }).join("");
+                    Swal.fire({
+                        title: "재고 부족",
+                        html: `상품의 재고가 부족합니다.<br>${message}`
+                    });
                     return
                 } 
                 localStorage.setItem("orderData", JSON.stringify(selectedCartProduct))

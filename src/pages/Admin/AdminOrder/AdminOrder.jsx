@@ -83,8 +83,12 @@ function AdminOrder(props) {
 
     useEffect(() => {
         if(principal?.data?.data.roleName !== "ROLE_ADMIN" || !principal?.data) {
-            alert("정상적인 접근이 아닙니다.")
             navigate("/")
+            Swal.fire({
+                title: "비정상 접근",
+                text: "정상적인 접근이 아닙니다."
+            })
+            return;
         }
     }, [])
 
@@ -193,8 +197,14 @@ function AdminOrder(props) {
         getOrdersCount.refetch();
 
         if(orderData === undefined) {
-            alert("검색된 상품이 존재하지 않습니다.");
-            navigate('/admin/order')
+            Swal.fire({
+                title: "검색 실패",
+                text: "검색된 상품이 존재하지 않습니다."
+            }).then((result) => {
+                if(result.isConfirmed) {
+                    navigate('/admin/order')
+                }
+            })
         }
 
         getOrders.refetch()

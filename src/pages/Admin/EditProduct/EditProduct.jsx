@@ -5,6 +5,7 @@ import { getProductsApi, getProductsCountApi, removeProductApi } from '../../../
 import { useQuery, useQueryClient } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 import Mypage from '../../Mypage/Mypage';
+import Swal from 'sweetalert2';
 
 function getStartIndex(currentPage) {
     const startIndex = parseInt(currentPage) % 5 === 0 ? parseInt(currentPage) - 4 : parseInt(currentPage) - (parseInt(currentPage) % 5) + 1;
@@ -28,7 +29,6 @@ function getTotalPageIndex(startIndex, endIndex) {
     }
     return totalPageIndex;
 }
-
 
 function EditProduct(props) {
     const queryClient = useQueryClient();
@@ -57,8 +57,6 @@ function EditProduct(props) {
     const [ endIndex, setEndIndex ] = useState(0);
     const [ totalPageIndex, setTotalPageIndex ] = useState([]);
 
-
-
     const petType = [
         { value: "all", label: "전부"},
         { value: "dog", label: "강아지"},
@@ -85,13 +83,14 @@ function EditProduct(props) {
 
     useEffect(() => {
         if(principal?.data?.data.roleName !== "ROLE_ADMIN" || !principal?.data) {
-            alert("정상적인 접근이 아닙니다.")
             navigate("/")
+            Swal.fire({
+                title: "비정상 접근",
+                text: "정상적인 접근이 아닙니다."
+            })
+            return;
         }
     }, [])
-
-
-
 
     useEffect(() => {
         setSearchData({
@@ -99,9 +98,6 @@ function EditProduct(props) {
             searchValue: searchInput
         })
     }, [searchInput])
-
-
-
 
     const getProducts = useQuery(["getProducts"], async () => {
         const response = await getProductsApi(searchData);
@@ -138,18 +134,13 @@ function EditProduct(props) {
         }
     }) 
 
-
-
     if(getProductCount.isLoading || getProducts.isLoading) {
         return <></>
     }
 
-
-
     const handleSearchInputChange = (e) => {
         setSearchInput(e.target.value)
     }
-
 
     const handleSearchClick = () => {
         searchData.pageIndex = 1;
@@ -158,17 +149,11 @@ function EditProduct(props) {
         getProducts.refetch();
     }
 
-
-
-
     const handleOnKeyPress = (e) => {
         if(e.key === 'Enter') {
             handleSearchClick();
         }
     }
-
-
-
 
     const handleSearchSelectChange = (e) => {
         setSearchData({
@@ -177,22 +162,13 @@ function EditProduct(props) {
         })
     }
 
-
-
-
     const handleNavigateJoinProductDetailPageClick = (productMstId) => {
         navigate(`/admin/product/join/${productMstId}`)
     }
 
-
-
-
     const handleEditProductClick = (productMstId) => {
         navigate(`/admin/edit/product/${productMstId}`)
     }
-
-
-
 
     const handleRemoveProductClick = async (productMstId) => {
         try {
@@ -201,13 +177,33 @@ function EditProduct(props) {
                     Authorization: localStorage.getItem("accessToken")
                 }
             }
-            if(window.confirm("정말로 해당 상품을 삭제 하시겠습니까?")) {
-                await removeProductApi(productMstId, option)
-                alert("상품이 삭제되었습니다.")
-                getProducts.refetch();
-            } else {
-                alert("취소 되었습니다.")
-            }
+            Swal.fire({
+                title: "삭제 확인",
+                text: "선택하신 상품을 삭제하시겠습니까?",
+    
+                showCancelButton: true,
+                confirmButtonText: "확인",
+                confirmButtonColor: "#3085d6",
+                cancelButtonText: "취소",
+                cancelButtonColor: "#d33"
+            }).then(async (result) => {
+                if(result.isConfirmed) {
+                    await removeProductApi(productMstId, option)
+                    Swal.fire({ 
+                        title: "삭제 성공",
+                        text: "상품을 삭제했습니다."
+                    }).then((ok) => {
+                        if(ok.isConfirmed) {
+                            getProducts.refetch();
+                        }
+                    })
+                }else {
+                    Swal.fire({ 
+                        title: "삭제 취소",
+                        text: "취소되었습니다."
+                    })
+                }
+            })
         } catch (error) {
             console.log(error)
         }

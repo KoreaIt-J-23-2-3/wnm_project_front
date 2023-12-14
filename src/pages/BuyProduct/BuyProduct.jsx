@@ -9,6 +9,7 @@ import { getProductMstApi } from '../../apis/api/product';
 import { addToCartApi } from '../../apis/api/cart';
 import { getReviewByProductApi } from '../../apis/api/review';
 import RootContainer from '../../components/RootContainer/RootContainer';
+import Swal from 'sweetalert2';
 
 function BuyProduct(props) {
     const navigate = useNavigate();
@@ -65,12 +66,18 @@ function BuyProduct(props) {
         const productDtl = product.productDtlList.filter(pdt => pdt.productDtlId === option.value)[0];
 
         if(productDtl.tempStock <= 0) {
-            alert("해당 상품은 품절입니다.");
+            Swal.fire({
+                title: "상품 품절",
+                text: "해당 상품은 품절입니다.",
+            });
             return;
         }
 
         if(selectedProducts.filter(selectedProduct => selectedProduct.productDtlId === productDtl.productDtlId).length > 0){
-            alert("해당 상품은 이미 선택된 상품 입니다.");
+            Swal.fire({
+                title: "상품 중복",
+                text: "해당 상품은 이미 선택된 상품 입니다.",
+            });
             return;
         }
 
@@ -101,7 +108,10 @@ function BuyProduct(props) {
         updateSelectedPorudcts[index].price = pdt.price * parseInt(target.value);
 
         if(updateSelectedPorudcts[index].count > pdt.tempStock) {
-            alert("현재 재고 보다 많이 선택되었습니다.")
+            Swal.fire({
+                title: "재고 초과",
+                text: "현재 재고 보다 많이 선택되었습니다.",
+            });
             target.value = pdt.tempStock;
             return
         }
@@ -117,11 +127,17 @@ function BuyProduct(props) {
 
     const buyNowOnClick = () => {
         if(!principal.data) {
-            alert("로그인 후 사용해주세요.")
             navigate("/auth/signin")
+            Swal.fire({
+                title: "비정상 접근",
+                text: "로그인 후 사용해주세요."
+            })
         } else {
             if(selectedProducts.length === 0) {
-                alert("상품을 선택해주세요.")
+                Swal.fire({
+                    title: "상품 없음",
+                    text: "상품을 선택해주세요.",
+                });
             } else {
                 localStorage.setItem("orderData", JSON.stringify(selectedProducts));
                 localStorage.setItem("isCart", false);
@@ -138,19 +154,45 @@ function BuyProduct(props) {
                 }
             }
             if(!principal.data) {
-                alert("로그인 후 사용해주세요.")
                 navigate("/auth/signin")
+                Swal.fire({
+                    title: "비정상 접근",
+                    text: "로그인 후 사용해주세요."
+                })
             } else {
                 if(selectedProducts.length === 0) {
-                    alert("상품을 선택해주세요.")
+                    Swal.fire({
+                        title: "상품 없음",
+                        text: "상품을 선택해주세요.",
+                    });
                 } else {
-                    if(window.confirm("해당 상품을 장바구니에 담겠습니까?")) {
-                        addToCartApi(principal.data.data.userId, [...selectedProducts], option);
-                        alert("장바구니에 상품이 정상적으로 담겼습니다.")
-                        navigate(`/product/cart/${principal?.data?.data?.userId}`)
-                    } else {
-                        alert("취소되었습니다.")
-                    }
+                    Swal.fire({
+                        title: "삭제 확인",
+                        text: "선택하신 상품을 삭제하시겠습니까?",
+            
+                        showCancelButton: true,
+                        confirmButtonText: "확인",
+                        confirmButtonColor: "#3085d6",
+                        cancelButtonText: "취소",
+                        cancelButtonColor: "#d33"
+                    }).then(async (result) => {
+                        if(result.isConfirmed) {
+                            await addToCartApi(principal.data.data.userId, [...selectedProducts], option);
+                            Swal.fire({
+                                title: "장바구니 등록",
+                                text: "상품이 장바구니에 정삭적으로 담겼습니다."
+                            }).then((result) => {
+                                if(result.isConfirmed) {
+                                    navigate(`/product/cart/${principal?.data?.data?.userId}`)
+                                }
+                            })
+                        } else {
+                            Swal.fire({
+                                title: "장바구니 취소",
+                                text: "장바구니 등록을 취소하였습니다.",
+                            });
+                        }
+                    })
                 }
             }
         } catch(error) {

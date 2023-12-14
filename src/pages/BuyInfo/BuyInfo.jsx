@@ -7,6 +7,7 @@ import { getProductApi } from '../../apis/api/product';
 import { useNavigate } from 'react-router-dom';
 import { addOrderApi } from '../../apis/api/order';
 import RootContainer from '../../components/RootContainer/RootContainer';
+import Swal from 'sweetalert2';
 
 function BuyInfo(props) {
 
@@ -43,8 +44,11 @@ function BuyInfo(props) {
 
     useEffect(() => {
         if(!principal.data) {
-            alert("로그인 후 사용해주세요.")
             navigate("/auth/signin")
+            Swal.fire({
+                title: "비정상 접근",
+                text: "로그인 후 사용해주세요."
+            })
             return
         }
     }, [])
@@ -164,10 +168,15 @@ function BuyInfo(props) {
 
                 addOrderApi(order, option)
                 .then(response => {
-                    alert("결제가 완료되었습니다.");
-                    localStorage.removeItem("orderData")
-                    navigate("/")
-                    console.log(response);
+                    Swal.fire({
+                        title: "결제 성공",
+                        text: "결제가 완료되었습니다."
+                    }).then((result) => {
+                        if(result.isConfirmed) {
+                            localStorage.removeItem("orderData")
+                            navigate("/")
+                        }
+                    })
                 })
             } else {
                 alert(error_msg)
@@ -176,10 +185,21 @@ function BuyInfo(props) {
     }
 
     const handleCencelOnClick = () => {
-        if(window.confirm("주문을 취소하시겠습니까?")) {
-            navigate("/")
+        Swal.fire({
+            title: "주문 취소",
+            text: "주문을 취소하시겠습니까?",
+
+            showCancelButton: true,
+            confirmButtonText: "확인",
+            confirmButtonColor: "#3085d6",
+            cancelButtonText: "취소",
+            cancelButtonColor: "#d33"
+        }).then((result) => {
+            if(result.isConfirmed) {
+                navigate("/")
+            }
             return
-        }
+        })
     }
 
     return (

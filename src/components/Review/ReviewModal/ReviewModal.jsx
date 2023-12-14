@@ -6,6 +6,8 @@ import { addReviewApi } from '../../../apis/api/review';
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
 import { storage } from '../../../apis/firebase/firebase';
 import { useNavigate } from 'react-router-dom'; 
+import swal from 'sweetalert';
+import Swal from 'sweetalert2';
 
 function ReviewModal({ isOpen, onRequestClose, product, userId }) {
 
@@ -58,13 +60,29 @@ function ReviewModal({ isOpen, onRequestClose, product, userId }) {
                     const downLoadURL = await getDownloadURL(reviewImgStorageRef);
                     review.reviewImgUrl = downLoadURL
                 }
-                if(window.confirm("리뷰 등록 하시겠습니까?")) {
-                    await addReviewApi(review, option);
-                    onRequestClose()
-                    alert("리뷰 등록 완료!!")
-                    navigate(`/mypage/${userId}/review`);
-                };
-                
+                Swal.fire({
+                    title: "리뷰 등록 확인",
+                    text: "리뷰를 등록 하시겠습니까?",
+        
+                    showCancelButton: true,
+                    confirmButtonText: "확인",
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonText: "취소",
+                    cancelButtonColor: "#d33"
+                }).then(async (result) => {
+                    if(result.isConfirmed) {
+                        await addReviewApi(review, option);
+                        Swal.fire({
+                            title: "등록 완료",
+                            text: "리뷰가 등록 되었습니다."
+                        }).then((ok) => {
+                            if(ok.isConfirmed) {
+                                onRequestClose()
+                                navigate(`/mypage/${userId}/review`);
+                            }
+                        })
+                    }
+                })
             }catch(error) {
                 console.error(error);  
     }

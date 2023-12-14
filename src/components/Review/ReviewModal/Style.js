@@ -58,6 +58,7 @@ export const SModalBody = css`
     & > textarea {
         width: 100%;
         height: 100px;
+        resize: none;
     }
 `;
 

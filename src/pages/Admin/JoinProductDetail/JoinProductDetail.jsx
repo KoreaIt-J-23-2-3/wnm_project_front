@@ -5,6 +5,7 @@ import { useQuery, useQueryClient } from 'react-query';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getProductMstApi } from '../../../apis/api/product';
 import Mypage from '../../Mypage/Mypage';
+import Swal from 'sweetalert2';
 
 function JoinProductDetail(props) {
     const param = useParams()
@@ -15,8 +16,12 @@ function JoinProductDetail(props) {
 
     useEffect(() => {
         if(principal?.data?.data.roleName !== "ROLE_ADMIN" || !principal?.data) {
-            alert("정상적인 접근이 아닙니다.")
             navigate("/")
+            Swal.fire({
+                title: "비정상 접근",
+                text: "정상적인 접근이 아닙니다."
+            })
+            return;
         }
     }, [])
 

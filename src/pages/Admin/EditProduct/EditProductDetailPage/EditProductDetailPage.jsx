@@ -7,6 +7,7 @@ import { storage } from '../../../../apis/firebase/firebase';
 /** @jsxImportSource @emotion/react */
 import * as S from './Style';
 import Mypage from '../../../Mypage/Mypage';
+import Swal from 'sweetalert2';
 
 function EditProductDetailPage(props) {
     const queryClient = useQueryClient();
@@ -40,8 +41,12 @@ function EditProductDetailPage(props) {
     let productMinimumData = [];
     useEffect(() => {
         if(principal?.data?.data.roleName !== "ROLE_ADMIN" || !principal?.data) {
-            alert("정상적인 접근이 아닙니다.")
             navigate("/")
+            Swal.fire({
+                title: "비정상 접근",
+                text: "정상적인 접근이 아닙니다."
+            })
+            return;
         }
     }, [])
 
@@ -167,8 +172,14 @@ function EditProductDetailPage(props) {
             }
 
             await updateProductApi(productMstId, productData, option);
-            alert("수정이 완료되었습니다.")
-            window.location.replace("/admin/product/edit")
+            Swal.fire({
+                title: "상품 수정 성공",
+                text: "상품 수정 되었습니다."
+            }).then((result) => {
+                if(result.isConfirmed) {
+                    window.location.replace("/admin/product/edit")
+                }
+            })
         }catch(error) {
             console.log(error.response.data)
         }
